@@ -5,23 +5,72 @@ __lua__
 -- init() calls once at start --
 function _init()
 	cls(1)
+	x=40
+	y=64
 	
-end
--- draw() draws frame on screen --
-function _draw()
-	-- clears screen each frame --
-	cls(1)
-	-- shmup spaceship sprite --
-	spr(1,40,30)
-	-- shmup enemy sprite --
-	spr(2,80,20)
-	-- bullet sprite --
-	spr(3,60,60)
+	speed=1
+
 end
 -- update() makes changes on screen --
 function _update()
+
+	-- controls --
+
+	--speed=0
+	if btn(0) then
+		speed=-2
+		x=x+speed
+	end
 	
-end
+	if btn(1) then
+		speed=2
+		x=x+speed
+	end
+	
+	if btn(2) then
+		speed=-2
+		y=y+speed
+	end
+	
+	if btn(3) then
+		speed=2
+		y=y+speed
+	end
+
+ -- moving the ship --
+		
+		
+	-- checking for edge of screen --
+	x=x+speed
+	y=y+speed
+		if x>120 then
+	  --x=120
+			speed=-1
+		end
+	
+	 if x<0 then
+	 	--x=0
+	 	speed=1
+	 end
+	 
+	 if y>120 then
+	 	--y=120
+	 	speed=-1
+	 end
+	 
+	 if y<0 then
+	 	--y=0
+	 	speed=1
+	 end
+	end
+-- draw() draws frame on screen --
+function _draw()
+	cls(1)
+ spr(1,x,y)
+	--spr(2,x,y)--
+	
+end	
+
 __gfx__
 00000000000770005500005500055000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000007cc7000500005000555500000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
