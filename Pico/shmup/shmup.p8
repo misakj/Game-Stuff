@@ -5,19 +5,27 @@ __lua__
 -- init() calls once at start --
 function _init()
 	cls(1)
+	harry=90
+	mimi=120
+	
 end
 -- draw() draws frame on screen --
 function _draw()
--- shmup spaceship sprite --
-spr(1,50,100)
--- shmup enemy sprite --
-spr(2,80,20)
--- bullet sprite --
-spr(3,60,60)
+	-- clears screen each frame --
+	cls(1)
+	-- shmup spaceship sprite --
+	print(harry,64,64,mimi)
+	print(mimi,60,60,harry)
+	spr(1,harry,mimi)
+	-- shmup enemy sprite --
+	spr(2,80,20)
+	-- bullet sprite --
+	spr(3,60,60)
 end
 -- update() makes changes on screen --
 function _update()
-
+	harry=harry+1
+	mimi=mimi-1
 end
 __gfx__
 00000000000770005500005500055000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
