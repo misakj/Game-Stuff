@@ -4,14 +4,51 @@ __lua__
 -- player controls lesson 3 --
 -- init() calls once at start --
 function _init()
-	cls(1)
-	-- position of ship --
+	cls(0)
+
+
+	
+	-- state switch --
+	mode="start"
+
+end
+
+function _update()
+	
+	if mode=="game" then
+		-- calls to tab 2
+		update_game()
+	elseif mode=="start" then
+		update_start()
+	end
+
+end
+
+-- draw() draws frame on screen --
+function _draw()
+		
+	if mode=="game" then
+		-- calls to tab 3
+		draw_game()
+	elseif mode=="start" then
+		-- calls to tab 3
+		draw_start()
+	end
+
+end
+
+function startgame()
+	-- reset everything for fresh session or game over
+	mode="game"
+	
+		-- position of ship --
 	shipx=64
 	shipy=64
 	-- speed of ship
 	shipspdx=1
 	shipspdy=1
-	-- ship sprite
+	
+		-- ship sprite
 	shipspr=1
 	flamespr=6
 	
@@ -38,31 +75,128 @@ function _init()
 	--lives
 	lives=3
 	
+	--bomb count
+	bombs=3
+	
+	-- star tables
+	starx={}
+	stary={}
+	starspd={}
+	for i=1,100 do
+		add(starx, flr(rnd(128)))
+		add(stary, flr(rnd(128)))
+		add(starspd, rnd(1.5)+0.5)
+	end
 end
+
+
+--extra notes--
+	--nil
+	--score=nil
+	
+	-- .. operator -- concatenates	instead of '+'
+	--score="score:"..10000
+	
+		--[[
+	">" only in "if" statement
+	loop i if heart
+	1    1 3>1 yes
+	2    2 3>2 yes
+	3    3 3>3 !no
+	4    4 4>4 !no
+
+	--]]
+	
+		-- array/list/table
+	--stars={"spiderman","ironman","hulk","thor","hawkeye"}
+	--can add additional index
+	--stars[6]="black widow"
+	--same with add()
+	--add(stars, "starlord")
+	--del() to delete entry
+	--del(stars, "spiderman")
+	-- hash (pound) sign gets length of array
+	
+		--[[ first attempt to move stars
+	-- move stars
+	for i=1,#starx do
+		starx[i]=starx[i]+starx_mv
+		
+	end
+	
+	for i=1,#stary do
+		stary[i]=stary[i]+stary_mv
+	end
+	
+	for i=1,#starx do
+		if (starx[i] % 2 == 0) then
+			starcolor=flr(rnd(16)*10)
+		else
+			starcolor=7
+		end
+	end
+--]]
+-->8
+function starfield()
+	for i=1,#starx do
+		local scol=6
+		
+		if starspd[i]<1 then
+			scol=1
+		elseif starspd[i]<1.5 then
+			scol=13
+		end
+		
+		pset(starx[i],stary[i],scol)
+	end
+end	
+
+function amimatestars()
+	for i=1,#stary do
+		--create a local variable
+		local sy=stary[i]
+		sy=sy+starspd[i]
+		if sy>128 then
+			sy=sy-128
+		end
+		stary[i]=sy
+	end
+end
+-->8
+--update tab--
 -- update() makes changes on screen --
-function _update()
+function update_game()
 
 	-- controls --
 
 	shipspdx=0
 	shipspdy=0
+	
 	shipspr=1
+	
+	starx_mv=0
+	stary_mv=0
+	
 	if btn(0) then
 		shipspdx=-2
 		shipspr=2
+		starx_mv=-1
 	end
 	
 	if btn(1) then
 		shipspdx=2
 		shipspr=3
+		starx_mv=1
 	end
 	
 	if btn(2) then
 		shipspdy=-2
+		stary_mv=1
 	end
 	
 	if btn(3) then
 		shipspdy=2
+		stary_mv=-1
 	end
 	
 	if btnp(5) and not btnp(4) then
@@ -84,6 +218,7 @@ function _update()
 		bully3=shipy-3
 		sfx(1)
 		muzzle=5
+		bombs-=1
 	end
 
  -- moving the ship --
@@ -106,6 +241,11 @@ function _update()
 		muzzle=muzzle-1
 	end
 	
+	-- tutorial version to animate stars
+	-- first attempt in extra notes and paddle exercise
+	amimatestars()
+	
+
 	
 	-- checking for edge of screen --
 
@@ -125,9 +265,19 @@ function _update()
 	 	shipy=0
 	 end
 	end
--- draw() draws frame on screen --
-function _draw()
-	cls(1)
+	
+	function update_start()
+		
+		if btnp(4) or btnp(5) then
+			startgame()	
+		end
+	
+	end
+-->8
+-- draw
+function draw_game()
+	cls(0)
+	starfield()
  spr(shipspr,shipx,shipy)
  spr(flamespr,shipx,shipy+4)
 	spr(32,bullxp,bullyp)
@@ -147,26 +297,23 @@ function _draw()
 			spr(11,i*9-8,1)
 		end
 	end
+	
+	--bomb count--
+		for i=1,3 do
+		if bombs>=i then
+			spr(56,i*9+90,2)
+		else
+			spr(57,i*9+90,2)
+		end
+	end
+
 end
 
-	
-
---extra notes--
-	--nil
-	--score=nil
-	
-	-- .. operator -- concatenates	instead of '+'
-	--score="score:"..10000
-	
-		--[[
-	">" only in "if" statement
-	loop i if heart
-	1    1 3>1 yes
-	2    2 3>2 yes
-	3    3 3>3 !no
-	4    4 4>4 !no
-
-	--]]
+function draw_start()
+	cls(1)
+	print("my awesome shmup",35,40,12)
+	print("press any key to start",20,80,7)
+end
 __gfx__
 00000000000770000007700000077000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000007cc70000cc77000077cc00000000000000000000000000000000000000000000000000000000000880088008800880000000000000000000000000
@@ -192,14 +339,14 @@ __gfx__
 00099000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-000bb000000000000000000000000000000000000000000000000000000000000899998000000000000000000000000000000000000000000000000000000000
-000bb000000000000000000000000000000000000000000000000000000000008999999800000000000000000000000000000000000000000000000000000000
-000bb0000000000000000000000000000000000000000000000000000000000088aaaa8800000000000000000000000000000000000000000000000000000000
-000bb00000000000000000000000000000000000000000000000000000000000008aa80000000000000000000000000000000000000000000000000000000000
-000bb00000000000000000000000000000000000000000000000000000000000008aa80000000000000000000000000000000000000000000000000000000000
-000000000000000000000000000000000000000000000000000000000000000088aaaa8800000000000000000000000000000000000000000000000000000000
-000bb000000000000000000000000000000000000000000000000000000000008999999800000000000000000000000000000000000000000000000000000000
-000bb000000000000000000000000000000000000000000000000000000000000899998000000000000000000000000000000000000000000000000000000000
+000bb000000000000000000000000000000000000000000000000000000000000899998008888880000000000000000000000000000000000000000000000000
+000bb000000000000000000000000000000000000000000000000000000000008999999880000008000000000000000000000000000000000000000000000000
+000bb0000000000000000000000000000000000000000000000000000000000088aaaa8888000088000000000000000000000000000000000000000000000000
+000bb00000000000000000000000000000000000000000000000000000000000008aa80000800800000000000000000000000000000000000000000000000000
+000bb00000000000000000000000000000000000000000000000000000000000008aa80000800800000000000000000000000000000000000000000000000000
+000000000000000000000000000000000000000000000000000000000000000088aaaa8888000088000000000000000000000000000000000000000000000000
+000bb000000000000000000000000000000000000000000000000000000000008999999880000008000000000000000000000000000000000000000000000000
+000bb000000000000000000000000000000000000000000000000000000000000899998008888880000000000000000000000000000000000000000000000000
 __sfx__
 0000000006750097500a7500c7500e75010750127501475016750197501a7501d7501f75020750227502375024750257002770027700297002a7002b7001c7001e7002170024700267002b7002e7003070036700
 00040000126401164011620106200f6100e6100d6500a650086500565003650016500065003650036300360001600016000060000600006000060000600006000060000600006000060000600006000060000000
