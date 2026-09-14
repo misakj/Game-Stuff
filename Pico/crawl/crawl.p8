@@ -20,8 +20,12 @@ zombie_framel=17
 brains_spr=6
 brains_cnt=3
 
-end
+brain_level=10
+brainsx={}
+brainsy={}
 
+
+end
 
 function _update()
 
@@ -87,9 +91,20 @@ function _draw()
 			spr(7,i*9,2)
 		end
 	end
+	brain_map()
+	
 end
 
 
+-->8
+function brain_map()
+	for i=1,brain_level do
+		add(brainsx, flr(rnd(125)))
+		add(brainsy, flr(rnd(90)))
+		spr(6,brainsx[i],brainsy[i])
+	end
+	
+end
 __gfx__
 00000000000370000003700000037000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000330000003300000033000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
