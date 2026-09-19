@@ -12,7 +12,7 @@ function _init()
 	
 	blinkt=1
 	
-	timer = 4
+	star={x=40,y=60,spd=1.2}
 
 end
 -- update() makes changes on screen --
@@ -25,9 +25,9 @@ function _update()
 	elseif mode=="start" then
 		-- start screen
 		update_start()
-	elseif mode=="splash" then
-		-- splash screen after start
-		update_splash()
+	elseif mode=="start" then
+		-- start screen
+		update_start()
 	elseif mode=="over" then
 		update_over()
 	end
@@ -43,9 +43,6 @@ function _draw()
 	elseif mode=="start" then
 		-- start screen
 		draw_start()
-		elseif mode=="splash" then
-		-- splash screen after start
-		draw_splash()
 	elseif mode=="over" then
 		draw_over()
 	end
@@ -94,8 +91,6 @@ function startgame()
 	--bomb count
 	bombs=3
 	
-	timer = 4
-	
 	-- star tables
 	starx={}
 	stary={}
@@ -106,13 +101,7 @@ function startgame()
 		add(starspd, rnd(1.5)+0.5)
 	end
 	
-	linex={}
-	liney={}
--- line randomizer
-	for i=1,100 do
-		add(linex, flr(rnd(128)))
-		add(liney, flr(rnd(128)))
-	end
+	
 end
 
 
@@ -152,7 +141,6 @@ function blink()
 	end
 	return blinkani[blinkt]
 end
-
 -->8
 -- update
 
@@ -257,28 +245,18 @@ function update_game()
 	amimatestars()
 end
 
-	function update_start()
-		if btnp(4) or btnp(5) then
-			startgame()
-			mode="splash"
-		end
+function update_start()
+	if btnp(4) or btnp(5) then
+		startgame()
+		
 	end
+end
 
-	function update_over()
+function update_over()
 		if btnp(4) or btnp(5) then
 			mode="start"
-		end
 	end
-
-	function update_splash()	
-		
-		if timer > 0 then
-			timer-= 1/30
-		else
-			startgame()
-		end
-	end
-
+end
 -->8
 -- draw
 function draw_game()
@@ -317,33 +295,16 @@ end
 
 function draw_start()
 	cls(1)
-	print("my awesome shmup",30,45,12) 
-	print("press any key to start",20,70,blink())
+	
+	print(star.x,10,10)
+	--print("my awesome shmup",30,45,12) 
+	--print("press any key to start",20,70,blink())
 end
 
 function draw_over()
 	cls(8)
 	print("game over!",45,45,2) 
 	print("press any key to continue",20,70,blink())
-end
-
-function draw_splash()
-	cls(2)
-	print("game starts in: ",30,45,7)
-	draw_lines()
-	print(flr(timer),61,70,7) 
-end
-
-function draw_lines()
-	local pointy=2
-	for i=1,#linex do
-		if pointy<8 then
-			pointy+=1
-		else
-			pointy=1
-		end
-		line(linex[i]+1, liney[i]-2, linex[i]+1, liney[i]-1, pointy)
-	end
 end
 -->8
 --extra notes--
